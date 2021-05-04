@@ -18,11 +18,11 @@ import axios from 'axios';
 import Countries from './Countries';
 import Categories from './Categories';
 import Sort from './Sort';
-import Event from './Event';
 import Pagination from './Pagination';
 import View from './View';
 import GridCard from './GridCard';
 import ListCard from './ListCard';
+import Loader from './Loader';
 
 const drawerWidth = 240;
 
@@ -208,7 +208,7 @@ function ResponsiveDrawer(props) {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <div className={classes.main}>
-              {eventsList}
+              {eventsList.length === 0 ? <Loader /> : eventsList}
           </div>        
         </main>
       </div>
