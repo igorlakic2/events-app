@@ -21,6 +21,8 @@ import Sort from './Sort';
 import Event from './Event';
 import Pagination from './Pagination';
 import View from './View';
+import GridCard from './GridCard';
+import ListCard from './ListCard';
 
 const drawerWidth = 240;
 
@@ -119,14 +121,30 @@ function ResponsiveDrawer(props) {
     const response = await axios.get(url);
     setEvents(response.data.events);
     context.setPaginationContext(response.data.pagination);
-    console.log(response.data.pagination);
+    console.log(response.data.events);
   }
 
   const eventsList = events.map(event => {
-      return <Event key={event.id}  name={event.name} place={event.venue.name} location={event.venue.location.address.address} />
+    return context.view === 'grid' ? 
+         <GridCard 
+              date={event.event_date ? event.event_date.value : 'No date'} 
+              image={event.images && event.images.large && event.images.large.url ? event.images.large.url : 'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image-720x530.jpg'} 
+              key={event.id}  
+              name={event.name ? event.name : 'Unknown'} 
+              place={event.venue && event.venue.name ? event.venue.name : 'Unknown'} 
+              location={event.venue && event.venue.location && event.venue.location.address && event.venue.location.address.address ? event.venue.location.address.address : 'Unknown'}
+              />  : 
+          <ListCard
+              date={event.event_date ? event.event_date.value : 'No date'} 
+              image={event.images && event.images.large && event.images.large.url ? event.images.large.url : 'https://martialartsplusinc.com/wp-content/uploads/2017/04/default-image-720x530.jpg'} 
+              key={event.id}  
+              name={event.name ? event.name : 'Unknown'} 
+              place={event.venue && event.venue.name ? event.venue.name : 'Unknown'} 
+              location={event.venue && event.venue.location && event.venue.location.address && event.venue.location.address.address ? event.venue.location.address.address : 'Unknown'}
+          />
+        
+      
   });
-
-//   date={event.local_event_date.value} image={event.images.large.url}
 
   useEffect(() => {
       getEvents(context.country, context.sort, context.categories, context.navStart);
