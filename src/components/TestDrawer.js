@@ -23,6 +23,7 @@ import View from './View';
 import GridCard from './GridCard';
 import ListCard from './ListCard';
 import Loader from './Loader';
+import Autocomplete from './Autocomplete';
 
 const drawerWidth = 240;
 
@@ -74,7 +75,6 @@ function ResponsiveDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [events, setEvents] = useState([]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -96,6 +96,10 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         <View />
+      </List>
+      <Divider />
+      <List>
+        <Autocomplete />
       </List>
     </div>
   );
@@ -119,12 +123,11 @@ function ResponsiveDrawer(props) {
       url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&lang=en-us&category_ids=${selectedCategories.join('%2c')}&sort_by=${sort}&start=${start}&rows=12`;
     
     const response = await axios.get(url);
-    setEvents(response.data.events);
+    context.setEvents(response.data.events);
     context.setPaginationContext(response.data.pagination);
-    console.log(response.data.events);
   }
 
-  const eventsList = events.map(event => {
+  const eventsList = context.events.map(event => {
     return context.view === 'grid' ? 
          <GridCard 
               date={event.event_date ? event.event_date.value : 'No date'} 

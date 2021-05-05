@@ -10,6 +10,9 @@ const App = () => {
     const [pagination, setPagination] = useState({});
     const [navStart, setNavStart] = useState(0);
     const [view, setView] = useState('grid');
+    const [cities, setCities] = useState([]);
+    const [citiesIds, setCitiesIds] = useState([]);
+    const [events, setEvents] = useState([]);
 
     const setCountryHandler = (country) => {
         setCountry(country);
@@ -35,6 +38,18 @@ const App = () => {
         setView(view);
     }
 
+    const setCitiesHandler = cities => {
+        setCities(cities);
+    }
+
+    const setCitiesIdsHandler = ids => {
+        setCitiesIds(ids);
+    }
+
+    const setEventsHandler = events => {
+        setEvents(events);
+    }
+
     return (
         <div>
             <AppContext.Provider 
@@ -50,7 +65,13 @@ const App = () => {
                     navStart: navStart,
                     setNavStart: (x) => setNavStartHandler(x),
                     view: view,
-                    setView: (view) => setViewHandler(view)         
+                    setView: (view) => setViewHandler(view),
+                    cities: cities,
+                    setCities: (cities) => setCitiesHandler(cities),
+                    citiesIds: citiesIds,
+                    setCitiesIds: (ids) => setCitiesIdsHandler(ids),
+                    events: events,
+                    setEvents: (events) => setEventsHandler(events)        
                 }}
                 >
                 <TestDrawer />

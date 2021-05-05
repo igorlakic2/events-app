@@ -12,5 +12,11 @@ export default React.createContext({
     navStart: 0,
     setNavStart: (x) => {},
     view: 'grid',
-    setView: (view) => {}  
+    setView: (view) => {},
+    cities: [],
+    setCities: (cities) => {},
+    citiesIds: [],
+    setCitiesIds: (ids) => {},
+    events: [],
+    setEvents: (events) => {}  
 });
