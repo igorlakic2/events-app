@@ -24,7 +24,6 @@ export default function Tags() {
   const getCities = async (country) => {
     const countryId = country === 'spain' ? 724 : country === 'germany' ? 276 : country === 'poland' ? 616 : null;
     const response = await axios.get(`https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&lang=en-us&country_id=${countryId}`);
-    console.log(response.data.cities);
     const cities = response.data.cities.map(city => {
         return city;
     });
@@ -43,13 +42,19 @@ export default function Tags() {
   }
 
   useEffect(() => {
-    getEventsByCities(context.citiesIds, context.sort, context.navStart)
+    getEventsByCities(context.citiesIds, context.sort, context.navStart, context.country)
   }, [context.citiesIds]);
 
-  const getEventsByCities = async (citiesIds, sort, start) => {
-    const response = await axios.get(`https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&[%E2%80%A6]&city_ids=${citiesIds}&sort_by=${sort}&start=${start}&rows=12`);
-    // citiesIds.length === 0 ? context.setEvents(response)
-    console.log(response);
+  const getEventsByCities = async (citiesIds, sort, start, country) => {
+    let url = ``;
+    citiesIds.length === 0 ?
+      url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&lang=en-us&sort_by=${sort}&start=${start}&rows=12`
+    :
+      url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&[%E2%80%A6]&city_ids=${citiesIds}&sort_by=${sort}&start=${start}&rows=12`;
+
+    const response = await axios.get(url);
+    context.setEvents(response.data.events);
+    console.log(response.data.events);
   }
 
   return (
