@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export default React.createContext({
     country: 'germany',
@@ -18,5 +18,7 @@ export default React.createContext({
     citiesIds: [],
     setCitiesIds: (ids) => {},
     events: [],
-    setEvents: (events) => {}  
-});
+    setEvents: (events) => {},
+    venues: [],
+    setVenues: (venues) => {},
+})

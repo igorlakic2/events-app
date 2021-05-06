@@ -8,7 +8,8 @@ import AppContext from '../AppContext';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(3),
+    marginLeft: theme.spacing(3),
+    marginTop: theme.spacing(1),
     minWidth: 120,
   },
   selectEmpty: {

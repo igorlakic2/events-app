@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Chip from '@material-ui/core/Chip'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { makeStyles } from '@material-ui/core/styles'
@@ -18,55 +18,48 @@ const useStyles = makeStyles((theme) => ({
 export default function Tags() {
     const classes = useStyles()
     const context = useContext(AppContext)
+    const [venuesTerm, setVenuesTerm] = useState('')
+    const [venues, setVenues] = useState([])
+    const [venuesIds, setVenuesIds] = useState([])
 
-    const getCities = async (country) => {
-        const countryId =
-            country === 'spain'
-                ? 724
-                : country === 'germany'
-                ? 276
-                : country === 'poland'
-                ? 616
-                : null
+    const getVenues = async (country, term) => {
         const response = await axios.get(
-            `https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&lang=en-us&country_id=${countryId}`
+            `https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&venue_name=${term}`
         )
-        const cities = response.data.cities.map((city) => {
-            return city
-        })
-        context.setCities(cities)
+        setVenues(response.data.venues)
     }
 
     useEffect(() => {
-        getCities(context.country)
-    }, [context.country])
+        getVenues(context.country, venuesTerm)
+    }, [context.country, venuesTerm])
 
     const handleChange = (event, value) => {
-        context.setCitiesIds(
-            value.map((v) => {
-                return v.id
-            })
-        )
+        const arr = value.map((v) => v.id)
+        setVenuesIds(arr)
     }
 
-    useEffect(() => {
-        getEventsByCities(
-            context.citiesIds,
-            context.sort,
-            context.navStart,
-            context.country
-        )
-    }, [context.citiesIds])
+    const handleValueChange = (event) => {
+        setVenuesTerm(event.target.value)
+    }
 
-    const getEventsByCities = async (citiesIds, sort, start, country) => {
+    const getEventsByVenues = async (venues, sort, start, country) => {
         let url = ``
-        citiesIds.length === 0
+        venuesIds.length === 0
             ? (url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&lang=en-us&sort_by=${sort}&start=${start}&rows=12`)
-            : (url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&[%E2%80%A6]&city_ids=${citiesIds}&sort_by=${sort}&start=${start}&rows=12`)
+            : (url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&[%E2%80%A6]&venue_ids=${venues}&sort_by=${sort}&start=${start}&rows=12`)
 
         const response = await axios.get(url)
         context.setEvents(response.data.events)
     }
+
+    useEffect(() => {
+        getEventsByVenues(
+            venuesIds,
+            context.sort,
+            context.navStart,
+            context.country
+        )
+    }, [venuesIds])
 
     return (
         <div className={classes.root}>
@@ -74,7 +67,7 @@ export default function Tags() {
                 onChange={handleChange}
                 multiple
                 id="tags-standard"
-                options={context.cities}
+                options={venues}
                 getOptionLabel={(option) => option.name}
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => {
@@ -91,8 +84,9 @@ export default function Tags() {
                     <TextField
                         {...params}
                         variant="standard"
-                        label="Cities"
-                        placeholder="Cities"
+                        label="Venues"
+                        onChange={handleValueChange}
+                        placeholder="Venues"
                     />
                 )}
             />
