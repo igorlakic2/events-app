@@ -43,13 +43,14 @@ export default function Tags() {
     }
 
     const getEventsByVenues = async (venues, sort, start, country) => {
-        let url = ``
+        let url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&`;
         venuesIds.length === 0
-            ? (url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=${country}&lang=en-us&sort_by=${sort}&start=${start}&rows=12`)
-            : (url = `https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&[%E2%80%A6]&venue_ids=${venues}&sort_by=${sort}&start=${start}&rows=12`)
+            ? (url = `${url}domain=${country}&lang=en-us&sort_by=${sort}&start=${start}&rows=12`)
+            : (url = `${url}[%E2%80%A6]&venue_ids=${venues}&sort_by=${sort}&start=${start}&rows=12`)
 
         const response = await axios.get(url)
         context.setEvents(response.data.events)
+        context.setPaginationContext(response.data.pagination)
     }
 
     useEffect(() => {
@@ -59,7 +60,7 @@ export default function Tags() {
             context.navStart,
             context.country
         )
-    }, [venuesIds])
+    }, [venuesIds, context.sort, context.navStart])
 
     return (
         <div className={classes.root}>

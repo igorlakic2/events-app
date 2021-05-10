@@ -66,6 +66,7 @@ export default function Tags() {
 
         const response = await axios.get(url)
         context.setEvents(response.data.events)
+        context.setPaginationContext(response.data.pagination)
     }
 
     return (
